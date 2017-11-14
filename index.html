@@ -1,10 +1,17 @@
-<body>
-</body>
-<script>
-	setInterval(function(){
-	var r=Math.floor(Math.random()*256);
-	var g=Math.floor(Math.random()*256);
-	var b=Math.floor(Math.random()*256);
-	document.body.style.background="rgb("+r+","+g+","+b+")";
-},1);
-</script>
+<head>
+	<script>
+		var r = 127,
+			g = 127,
+			b = 127;
+		setInterval(function() {
+			//r+=Math.floor(Math.random()*7)-3; if(r<0) {r+=256;} else if(r>255){r-=256;}
+			//g+=Math.floor(Math.random()*7)-3; if(g<0) {g+=256;} else if(g>255){g-=256;}
+			//b+=Math.floor(Math.random()*7)-3; if(b<0) {b+=256;} else if(b>255){b-=256;}
+			r = Math.floor(Math.random() * 256);
+			g = Math.floor(Math.random() * 256);
+			b = Math.floor(Math.random() * 256);
+			document.body.style.background = "rgb(" + r + "," + g + "," + b + ")";
+		}, 1);
+	</script>
+</head>
+<body> </body>
