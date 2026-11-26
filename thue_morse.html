@@ -276,12 +276,12 @@
 
 <script>
 (function(){
-  const ALL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const MAX_N = ALL_LETTERS.length;
+  const ALL_PLAYERS = [...Array(72).keys()];
+  const MAX_N = ALL_PLAYERS.length;
   const MAX_TET = "72";
   let N = 14;
   let CURRENT_TET = 31;
-  let LETTERS = ALL_LETTERS.slice(0, N);
+  let PLAYERS = ALL_PLAYERS.slice(0, N);
 
   // horizontal track geometry (viewBox 920 x 170)
   const W = 920, H = 170;
@@ -292,11 +292,11 @@
   const DIP_Y  = TRACK_Y + TRACK_H - 30; // active position, dipped toward the bottom
 
   const SCALES = {
-    major:      { name: "Major",            intervals12Tet: [0,2,4,5,7,9,11] },
-    minor:      { name: "Minor",            intervals12Tet: [0,2,3,5,7,8,10] },
-    majorPent:  { name: "Major Pentatonic", intervals12Tet: [0,2,4,7,9] },
-    minorPent:  { name: "Minor Pentatonic", intervals12Tet: [0,3,5,7,10] },
-    blues:      { name: "Blues",            intervals12Tet: [0,3,5,6,7,10] },
+    major:      { name: "Major",            intervals: [1,9/8,5/4,4/3,3/2,5/3,15/8] },
+    minor:      { name: "Minor",            intervals: [1,9/8,6/5,4/3,3/2,8/5,9/5] },
+    majorPent:  { name: "Major Pentatonic", intervals: [1,9/8,5/4,3/2,5/3] },
+    minorPent:  { name: "Minor Pentatonic", intervals: [1,6/5,4/3,3/2,9/5] },
+    blues:      { name: "Blues",            intervals: [1,6/5,4/3,36/25,3/2,7/4] },
     chromatic:  { name: "Chromatic" },
   };
   const NOTE_NAMES_12TET = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -434,7 +434,7 @@ function* turns(playerCount){
       t.setAttribute('x', outPos.x);
       t.setAttribute('y', outPos.y);
       t.setAttribute('font-size', Math.max(12, LETTER_R*0.9));
-      t.textContent = LETTERS[i];
+      t.textContent = PLAYERS[i];
       g.appendChild(t);
 
       dotsLayer.appendChild(g);
@@ -444,7 +444,7 @@ function* turns(playerCount){
 
   function setN(n){
     N = n;
-    LETTERS = ALL_LETTERS.slice(0, N);
+    PLAYERS = ALL_PLAYERS.slice(0, N);
     document.getElementById('title').textContent = `Thue–Morse Sequence for ${N} Players`;
     document.getElementById('eyebrow').textContent = `${N} players, one line`;
     buildDots();
@@ -459,16 +459,17 @@ function* turns(playerCount){
     if(audioCtx.state === 'suspended') audioCtx.resume();
   }
 
+  const log2 = Math.log(2);
   function freqForIndex(i){
     if (currentScale === "chromatic") {
       return { freq: C4 * Math.pow(2, i / CURRENT_TET), octave: Math.floor(i / CURRENT_TET) + 4, step: i % CURRENT_TET };
     } else {
-      // Round 12-TET intervals to nearest value in given TET.
-      const scale = SCALES[currentScale].intervals12Tet;
+      // Round just intervals to nearest value in given TET.
+      const scale = SCALES[currentScale].intervals;
       const len = scale.length;
       const octave = Math.floor(i/len);
       const degree = i % len;
-      const step = Math.round(scale[degree] / 12 * CURRENT_TET);
+      const step = Math.round(Math.log(scale[degree])/log2 * CURRENT_TET);
       const power = octave + step / CURRENT_TET;
       return { freq: C4 * Math.pow(2, power), octave: octave + 4, step };
     }
@@ -573,7 +574,7 @@ function* turns(playerCount){
         nowRoundEl.textContent = 'Scale';
         nowTurnEl.textContent = `note ${turn + 1} of ${N}`;
       }
-      nowNoteEl.textContent = `${LETTERS[i]}  →  ${noteNameForSemitone(octave, step)}`;
+      nowNoteEl.textContent = `${PLAYERS[i]}  →  ${noteNameForSemitone(octave, step)}`;
       activate(i, noteMs);
       playTone(freq, noteMs / 1000);
       turn++;
