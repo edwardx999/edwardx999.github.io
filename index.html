@@ -1,16 +1,18 @@
 <head>
+	<div><a href="./thue_morse.html" class="LINK" style="color: #000;">Thue-Morse 31-TET Visualizer</a></div>
 	<script>
 		var r = 127,
 			g = 127,
 			b = 127;
 		setInterval(function() {
-			//r+=Math.floor(Math.random()*7)-3; if(r<0) {r+=256;} else if(r>255){r-=256;}
-			//g+=Math.floor(Math.random()*7)-3; if(g<0) {g+=256;} else if(g>255){g-=256;}
-			//b+=Math.floor(Math.random()*7)-3; if(b<0) {b+=256;} else if(b>255){b-=256;}
 			r = (Math.random()*256)|0;
 			g = (Math.random()*256)|0;
 			b = (Math.random()*256)|0;
 			document.body.style.background = "rgb(" + r + "," + g + "," + b + ")";
+			const inverted = "rgb(" + (255 - r) + "," + (255 - g) + "," + (255 - b) + ")";
+			for(const link of document.getElementsByClassName("LINK")) {
+				link.style.color = inverted;
+			}
 		}, 1000);
 	</script>
 </head>
